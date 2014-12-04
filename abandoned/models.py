@@ -5,13 +5,22 @@ class Author(models.Model):
     name = models.CharField(max_length=200)
     link = models.URLField()
 
+    def __str__(self):
+        return str(self.name)
+
 
 class Reason(models.Model):
     reason = models.CharField(max_length=200)
 
+    def __str__(self):
+        return str(self.reason)
+
 
 class Tag(models.Model):
     text = models.CharField(max_length=100)
+
+    def __str__(self):
+        return str(self.text)
 
 
 class Project(models.Model):
@@ -24,3 +33,6 @@ class Project(models.Model):
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
     date_added = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.name)
