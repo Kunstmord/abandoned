@@ -31,7 +31,6 @@ class Project(models.Model):
     reason = models.ForeignKey(Reason)
     tags = models.ManyToManyField(Tag)
     upvotes = models.IntegerField(default=0)
-    downvotes = models.IntegerField(default=0)
     date_added = models.DateTimeField()
 
     def __str__(self):
