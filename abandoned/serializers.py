@@ -19,13 +19,13 @@ class ReasonSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'tag',)
+        fields = ('id', 'text',)
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    author = serializers.RelatedField()
-    reason = serializers.RelatedField()
-    tags = serializers.RelatedField(many=True)
+    author = AuthorSerializer()
+    reason = ReasonSerializer()
+    tags = TagSerializer(many=True)
 
     class Meta:
         model = Project
