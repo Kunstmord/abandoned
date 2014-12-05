@@ -4,28 +4,28 @@ from rest_framework import serializers
 from abandoned.models import Author, Reason, Tag, Project
 
 
-class AuthorSerializer(serializers.ModelSerializer):
+class BaseAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ('id', 'name', 'link',)
 
 
-class ReasonSerializer(serializers.ModelSerializer):
+class BaseReasonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reason
         fields = ('id', 'reason',)
 
 
-class TagSerializer(serializers.ModelSerializer):
+class BaseTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'text',)
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer()
-    reason = ReasonSerializer()
-    tags = TagSerializer(many=True)
+    author = BaseAuthorSerializer()
+    reason = BaseReasonSerializer()
+    tags = BaseTagSerializer(many=True)
 
     class Meta:
         model = Project

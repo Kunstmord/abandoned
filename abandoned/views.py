@@ -3,22 +3,22 @@ from rest_framework import viewsets
 from abandoned.models import Project, Tag, Author, Reason
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
-from abandoned.serializers import TagSerializer, ProjectSerializer, AuthorSerializer, ReasonSerializer
+from abandoned.serializers import BaseTagSerializer, ProjectSerializer, BaseAuthorSerializer, BaseReasonSerializer
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
+    serializer_class = BaseAuthorSerializer
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
-    serializer_class = TagSerializer
+    serializer_class = BaseTagSerializer
 
 
 class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Reason.objects.all()
-    serializer_class = ReasonSerializer
+    serializer_class = BaseReasonSerializer
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
