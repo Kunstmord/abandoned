@@ -26,9 +26,9 @@ class Tag(models.Model):
 class Project(models.Model):
     name = models.CharField(max_length=400)
     link = models.URLField()
-    author = models.ForeignKey(Author)
+    author = models.ForeignKey(Author, related_name='projects')
     description = models.TextField()
-    reason = models.ForeignKey(Reason)
+    reason = models.ForeignKey(Reason, related_name='projects')
     tags = models.ManyToManyField(Tag)
     upvotes = models.IntegerField(default=0)
     date_added = models.DateTimeField(auto_now_add=True)
