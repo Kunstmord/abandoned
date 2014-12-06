@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Count
 from rest_framework import viewsets
 from abandoned.models import Project, Tag, Author, Reason
 from rest_framework.response import Response
@@ -9,6 +10,21 @@ from abandoned.serializers import BaseTagSerializer, ProjectSerializer, ReasonSe
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
+
+    # @list_route()
+    # def votes(self, request):
+    #     votes = Author.objects.annotate()
+    #     top = Project.objects.all().order_by('upvotes').reverse()
+    #     page = self.paginate_queryset(top)
+    #     serializer = self.get_pagination_serializer(page)
+    #     return Response(serializer.data)
+
+    @list_route()
+    def projects(self, request):
+        projects = Author.objects.annotate(Count('projects')).order_by('projects__count').reverse()
+        page = self.paginate_queryset(projects)
+        serializer = self.get_pagination_serializer(page)
+        return Response(serializer.data)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
