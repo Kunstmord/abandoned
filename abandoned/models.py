@@ -29,7 +29,7 @@ class Project(models.Model):
     author = models.ForeignKey(Author, related_name='projects')
     description = models.TextField()
     reason = models.ForeignKey(Reason, related_name='projects')
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, related_name='projects')
     upvotes = models.IntegerField(default=0)
     date_added = models.DateTimeField(auto_now_add=True)
 

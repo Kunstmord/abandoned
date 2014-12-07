@@ -34,16 +34,22 @@ class BaseTagSerializer(serializers.ModelSerializer):
         fields = ('id', 'text',)
 
 
-# class TagSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Tag
-#         fields = ('id', 'text')
+class BaseProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ('id',)
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('id', 'text', 'projects')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     author = BaseAuthorSerializer()
     reason = BaseReasonSerializer()
-    tags = BaseTagSerializer(many=True)
+    tags = BaseTagSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
