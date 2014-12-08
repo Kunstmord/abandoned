@@ -30,6 +30,20 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
+    @list_route()
+    def votes(self, request):
+        votes = Tag.objects.annotate(votes_total=Sum('projects__upvotes')).order_by('votes_total').reverse()
+        page = self.paginate_queryset(votes)
+        serializer = self.get_pagination_serializer(page)
+        return Response(serializer.data)
+
+    @list_route()
+    def projects(self, request):
+        projects = Tag.objects.annotate(Count('projects')).order_by('projects__count').reverse()
+        page = self.paginate_queryset(projects)
+        serializer = self.get_pagination_serializer(page)
+        return Response(serializer.data)
+
 
 class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Reason.objects.all()
