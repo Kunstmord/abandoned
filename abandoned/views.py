@@ -7,23 +7,31 @@ from rest_framework.decorators import list_route
 from abandoned.serializers import TagSerializer, ProjectSerializer, ReasonSerializer, AuthorSerializer
 
 
+def votes_generic(model_obj, class_instance):
+    votes = model_obj.objects.annotate(votes_total=Sum('projects__upvotes')).order_by('votes_total').reverse()
+    page = class_instance.paginate_queryset(votes)
+    serializer = class_instance.get_pagination_serializer(page)
+    return Response(serializer.data)
+
+
+def projects_generic(model_obj, class_instance):
+    votes = model_obj.objects.annotate(Count('projects')).order_by('projects__count').reverse()
+    page = class_instance.paginate_queryset(votes)
+    serializer = class_instance.get_pagination_serializer(page)
+    return Response(serializer.data)
+
+
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
 
     @list_route()
     def votes(self, request):
-        votes = Author.objects.annotate(votes_total=Sum('projects__upvotes')).order_by('votes_total').reverse()
-        page = self.paginate_queryset(votes)
-        serializer = self.get_pagination_serializer(page)
-        return Response(serializer.data)
+        return votes_generic(Author, self)
 
     @list_route()
     def projects(self, request):
-        projects = Author.objects.annotate(Count('projects')).order_by('projects__count').reverse()
-        page = self.paginate_queryset(projects)
-        serializer = self.get_pagination_serializer(page)
-        return Response(serializer.data)
+        return projects_generic(Author, self)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -32,22 +40,24 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
     @list_route()
     def votes(self, request):
-        votes = Tag.objects.annotate(votes_total=Sum('projects__upvotes')).order_by('votes_total').reverse()
-        page = self.paginate_queryset(votes)
-        serializer = self.get_pagination_serializer(page)
-        return Response(serializer.data)
+        return votes_generic(Tag, self)
 
     @list_route()
     def projects(self, request):
-        projects = Tag.objects.annotate(Count('projects')).order_by('projects__count').reverse()
-        page = self.paginate_queryset(projects)
-        serializer = self.get_pagination_serializer(page)
-        return Response(serializer.data)
+        return projects_generic(Tag, self)
 
 
 class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Reason.objects.all()
     serializer_class = ReasonSerializer
+
+    @list_route()
+    def votes(self, request):
+        return votes_generic(Reason, self)
+
+    @list_route()
+    def projects(self, request):
+        return projects_generic(Reason, self)
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
@@ -55,7 +65,7 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProjectSerializer
 
     @list_route()
-    def top(self, request):
+    def votes(self, request):
         top = Project.objects.all().order_by('upvotes').reverse()
         page = self.paginate_queryset(top)
         serializer = self.get_pagination_serializer(page)
