@@ -4,7 +4,7 @@ Github API-related string parsing, extracting of author names, etc
 import re
 
 
-def get_project_name(url: str) -> str:
+def get_project_name(url: str) -> list:
     if url.startswith('http://'):
         url = url[7:]
     elif url.startswith('https://'):
@@ -21,8 +21,13 @@ def get_project_name(url: str) -> str:
     if '/' not in url:
         return ''  # error case! (no author name)
     else:
-        url = re.sub(r'[a-zA-Z0-9\-_]+/', '', url)
+        url += '/'
 
-    if '/' in url:
-        return ''  # error case! (this is is some weird sub-project page) TODO - just strip the sub-project trail url
-    return url
+    results = re.findall(r'[a-zA-Z0-9\-_]+', url)
+
+    if results is not None and len(results) > 1:
+        return [results[0], results[1]]
+    else:
+        return []  # error case (malformed URL)
+
+print(get_project_name('http://github.com/author/project/branch/master'))
