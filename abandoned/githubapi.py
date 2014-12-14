@@ -23,7 +23,7 @@ def get_project_name(url: str) -> list:
     else:
         url += '/'
 
-    results = re.findall(r'[a-zA-Z0-9\-_]+', url)
+    results = url.split('/')
 
     if results is not None and len(results) > 1:
         return [results[0], results[1]]
