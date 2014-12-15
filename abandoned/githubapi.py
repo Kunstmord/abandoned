@@ -1,7 +1,12 @@
 """
 Github API-related string parsing, extracting of author names, etc
 """
-import re
+import requests
+from requests import exceptions
+
+
+class AbandonedException(Exception):
+    pass
 
 
 def get_project_name(url: str) -> list:
@@ -16,18 +21,32 @@ def get_project_name(url: str) -> list:
     if url.startswith('github.com/'):
         url = url[11:]
     else:
-        return ''  # error case! (this is not Github!)
+        raise AbandonedException('Please provide a link to Github')
+        # error case! (this is not Github!)
 
     if '/' not in url:
-        return ''  # error case! (no author name)
+        raise AbandonedException('The link you provided doesn''t seem to be correct')
+        # error case! (no author)
     else:
         url += '/'
 
     results = url.split('/')
 
     if results is not None and len(results) > 1:
-        return [results[0], results[1]]
+        try:
+            get_result = requests.get('https://api.github.com/repos/' + results[0] + '/' + results[1])
+        except requests.ConnectionError:
+            raise AbandonedException('We couldn''t connect to Github')
+        except requests.URLRequired:
+            raise AbandonedException('The link you provided doesn''t seem to be correct')
+        except exceptions.Timeout:
+            raise AbandonedException('The request to Github timed out')
+        else:
+            if get_result.status_code != 200:
+                raise AbandonedException('The link you provided doesn''t seem to be correct')
+            else:
+                json_results = get_result.json()
+                return [json_results['name'], json_results['owner']['login'], json_results['language']]
     else:
-        return []  # error case (malformed URL)
-
-print(get_project_name('http://github.com/author/project/branch/master'))
+        raise AbandonedException('The link you provided doesn''t seem to be correct')
+        # something else is wrong with the link
