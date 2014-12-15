@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.db.models import Count, Sum
 from rest_framework import viewsets
-from abandoned.models import Project, Tag, Author, Reason
+from abandoned.models import Project, Tag, Author, Reason, Language
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
-from abandoned.serializers import TagSerializer, ProjectSerializer, ReasonSerializer, AuthorSerializer
+from abandoned.serializers import TagSerializer, ProjectSerializer, ReasonSerializer, AuthorSerializer, LanguageSerializer
 
 
 def votes_generic(model_obj, class_instance):
@@ -58,6 +58,19 @@ class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
     @list_route()
     def projects(self, request):
         return projects_generic(Reason, self)
+
+
+class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Language.objects.all()
+    serializer_class = LanguageSerializer
+
+    @list_route()
+    def votes(self, request):
+        return votes_generic(Language, self)
+
+    @list_route()
+    def projects(self, request):
+        return projects_generic(Language, self)
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):

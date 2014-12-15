@@ -1,7 +1,7 @@
 __author__ = 'georgeoblapenko'
 
 from rest_framework import serializers
-from abandoned.models import Author, Reason, Tag, Project
+from abandoned.models import Author, Reason, Tag, Project, Language
 
 
 class BaseAuthorSerializer(serializers.ModelSerializer):
@@ -34,23 +34,36 @@ class BaseTagSerializer(serializers.ModelSerializer):
         fields = ('id', 'text',)
 
 
-class BaseProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
-        fields = ('id',)
-
-
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'text', 'projects')
 
 
+class BaseLanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = ('id', 'name',)
+
+
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = ('id', 'name', 'projects')
+
+
+class BaseProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ('id',)
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     author = BaseAuthorSerializer()
     reason = BaseReasonSerializer()
+    language = BaseLanguageSerializer()
     tags = BaseTagSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
-        fields = ('id', 'name', 'link', 'author', 'description', 'reason', 'tags', 'upvotes', 'date_added')
+        fields = ('id', 'name', 'link', 'author', 'description', 'reason', 'tags', 'language', 'upvotes', 'date_added')
