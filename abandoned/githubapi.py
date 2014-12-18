@@ -9,7 +9,7 @@ class AbandonedException(Exception):
     pass
 
 
-def get_project_name(url: str) -> list:
+def get_project_data(url: str) -> list:
     if url.startswith('http://'):
         url = url[7:]
     elif url.startswith('https://'):
