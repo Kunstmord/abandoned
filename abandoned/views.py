@@ -1,8 +1,8 @@
-from abandoned.githubapi import get_project_data
+from abandoned.githubapi import get_project_data, AbandonedException, GithubException
 from abandoned.models import Project, Tag, Author, Reason, Language
 from abandoned.serializers import TagSerializer, ProjectSerializer, ReasonSerializer, AuthorSerializer, LanguageSerializer
 from django.db.models import Count, Sum
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from json import loads
@@ -100,7 +100,12 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
 @api_view(['POST'])
 def handle_submit(request):
     request_data = loads(request.body.decode('utf-8'))
-    project_data = get_project_data(request_data['repo_url'])
+    try:
+        project_data = get_project_data(request_data['repo_url'])
+    except AbandonedException as e:
+        return HttpResponseBadRequest(str(e))
+    except GithubException as e:
+        return HttpResponse(str(e), status=503)
     repo_name, author_name, language = project_data
     author_url = 'https://github.com/' + author_name
     repo_url = 'https://github.com/' + author_name + '/' + repo_name
