@@ -9,6 +9,10 @@ class AbandonedException(Exception):
     pass
 
 
+class GithubException(Exception):
+    pass
+
+
 def get_project_data(url: str) -> list:
     if url.startswith('http://'):
         url = url[7:]
@@ -21,7 +25,7 @@ def get_project_data(url: str) -> list:
     if url.startswith('github.com/'):
         url = url[11:]
     else:
-        raise AbandonedException('Please provide a link to Github')
+        raise AbandonedException('The link you provided doesn''t seem to be a Github link')
         # error case! (this is not Github!)
 
     if '/' not in url:
@@ -36,11 +40,11 @@ def get_project_data(url: str) -> list:
         try:
             get_result = requests.get('https://api.github.com/repos/' + results[0] + '/' + results[1])
         except requests.ConnectionError:
-            raise AbandonedException('We couldn''t connect to Github')
+            raise GithubException('We couldn''t connect to Github')
         except requests.URLRequired:
             raise AbandonedException('The link you provided doesn''t seem to be correct')
         except exceptions.Timeout:
-            raise AbandonedException('The request to Github timed out')
+            raise GithubException('The request to Github timed out')
         else:
             if get_result.status_code != 200:
                 raise AbandonedException('The link you provided doesn''t seem to be correct')
