@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from rest_framework import routers
-from abandoned.views import TagViewSet, AuthorViewSet, ProjectViewSet, ReasonViewSet, LanguageViewSet, handle_submit
+from abandoned.views import TagViewSet, AuthorViewSet, ProjectViewSet, ReasonViewSet, LanguageViewSet, handle_submit, main_page
 
 
 router = routers.DefaultRouter()
@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'abandonedio.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
+    url(r'^$', main_page),
     url(r'^', include(router.urls)),
     url(r'^api/submit/', handle_submit),
     url(r'^admin/', include(admin.site.urls)),

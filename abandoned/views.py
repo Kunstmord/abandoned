@@ -130,3 +130,7 @@ def handle_submit(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return HttpResponseBadRequest("This project is already in the database")
+
+
+def main_page(request):
+    return render(request, 'index.html')
