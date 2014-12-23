@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="{{ STATIC_URL }}libs/jquery-2.1.3.min.js"></script>
+{#    <script src="{{ STATIC_URL }}libs/react.js"></script>#}
+{#    <script src="{{ STATIC_URL }}libs/JSXTransformer.js"></script>#}
+{#    <script src="{{ STATIC_URL }}libs/react-router.min.js"></script>#}
+{#    <script type="text/jsx" src="{{ STATIC_URL }}ui.js"></script>#}
+    <title>projects</title>
+</head>
+<body>
+    Projects
+    <div id="content">
+        <ul>
+        {% for project in projects_list %}
+            <li>{{ project.name }} by {{ project.author.name }} written in {{ project.language.name }},
+            {{ project.upvotes }} upvotes, created on {{ project.date_added|date:"d M Y" }}
+            </li>
+        {% endfor %}
+        </ul>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if projects_list.has_previous %}
+                    <a href="?page={{ projects_list.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ projects_list.number }} of {{ projects_list.paginator.num_pages }}.
+                </span>
+
+                {% if projects_list.has_next %}
+                    <a href="?page={{ projects_list.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</body>
+</html>
