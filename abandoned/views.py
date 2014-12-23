@@ -1,6 +1,7 @@
 from abandoned.githubapi import get_project_data, AbandonedException, GithubException
 from abandoned.models import Project, Tag, Author, Reason, Language
 from abandoned.serializers import TagSerializer, ProjectSerializer, ReasonSerializer, AuthorSerializer, LanguageSerializer
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Sum
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
@@ -130,6 +131,46 @@ def handle_submit(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return HttpResponseBadRequest("This project is already in the database")
+
+
+def projects_view(request, sorting='alphabetical'):
+    page = request.GET.get('page')
+    if sorting == 'alphabetical':
+        projects_list = Project.objects.order_by('name')
+    elif sorting == 'latest':
+        projects_list = Project.objects.order_by('date_added').reverse()
+    elif sorting == 'popular':
+        projects_list = Project.objects.order_by('upvotes').reverse()
+    else:
+        projects_list = Project.objects.order_by('name')
+    paginator = Paginator(projects_list, 10)
+    try:
+        projects = paginator.page(page)
+    except PageNotAnInteger:
+        projects = paginator.page(1)
+    except EmptyPage:
+        projects = paginator.page(paginator.num_pages)
+    return render(request, 'projects.html', {'projects_list': projects})
+
+
+def languages_view(request, sorting='alphabetical'):
+    page = request.GET.get('page')
+    if sorting == 'alphabetical':
+        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'), projects_total=Count('projects')).order_by('name')
+    elif sorting == 'projects':
+        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'), projects_total=Count('projects')).order_by('projects_total').reverse()
+    elif sorting == 'votes':
+        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'), projects_total=Count('projects')).order_by('votes_total').reverse()
+    else:
+        languages_list = Language.objects.order_by('name')
+    paginator = Paginator(languages_list, 10)
+    try:
+        languages = paginator.page(page)
+    except PageNotAnInteger:
+        languages = paginator.page(1)
+    except EmptyPage:
+        languages = paginator.page(paginator.num_pages)
+    return render(request, 'languages.html', {'languages_list': languages})
 
 
 def main_page(request):
