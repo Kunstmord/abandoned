@@ -27,7 +27,7 @@ def projects_generic(model_obj, class_instance):
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Author.objects.all()
+    queryset = Author.objects.order_by('name')
     serializer_class = AuthorSerializer
 
     @list_route()
@@ -40,7 +40,7 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Tag.objects.all()
+    queryset = Tag.objects.order_by('text')
     serializer_class = TagSerializer
 
     @list_route()
@@ -53,7 +53,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Reason.objects.all()
+    queryset = Reason.objects.order_by('reason')
     serializer_class = ReasonSerializer
 
     @list_route()
@@ -66,7 +66,7 @@ class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Language.objects.all()
+    queryset = Language.objects.order_by('name')
     serializer_class = LanguageSerializer
 
     @list_route()
@@ -79,7 +79,7 @@ class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Project.objects.all()
+    queryset = Project.objects.order_by('name')
     serializer_class = ProjectSerializer
 
     @list_route()
