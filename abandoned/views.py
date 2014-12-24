@@ -27,7 +27,7 @@ def projects_generic(model_obj, class_instance):
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Author.objects.order_by('name')
+    queryset = Author.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
     serializer_class = AuthorSerializer
 
     @list_route()
@@ -40,7 +40,7 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Tag.objects.order_by('text')
+    queryset = Tag.objects.extra(select={'lowercase_text': 'lower(text)'}).order_by('lowercase_text')
     serializer_class = TagSerializer
 
     @list_route()
@@ -53,7 +53,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Reason.objects.order_by('reason')
+    queryset = Reason.objects.extra(select={'lowercase_reason': 'lower(reason)'}).order_by('lowercase_reason')
     serializer_class = ReasonSerializer
 
     @list_route()
@@ -66,7 +66,7 @@ class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Language.objects.order_by('name')
+    queryset = Language.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
     serializer_class = LanguageSerializer
 
     @list_route()
@@ -79,7 +79,7 @@ class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Project.objects.order_by('name')
+    queryset = Project.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
     serializer_class = ProjectSerializer
 
     @list_route()
@@ -136,7 +136,7 @@ def handle_submit(request):
 def projects_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
     if sorting == 'alphabetical':
-        projects_list = Project.objects.order_by('name')
+        projects_list = Project.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
     elif sorting == 'latest':
         projects_list = Project.objects.order_by('date_added').reverse()
     elif sorting == 'popular':
@@ -156,11 +156,16 @@ def projects_view(request, sorting='alphabetical'):
 def languages_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
     if sorting == 'alphabetical':
-        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'), projects_total=Count('projects')).order_by('name')
+        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                                   projects_total=Count('projects')).\
+            extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
     elif sorting == 'projects':
-        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'), projects_total=Count('projects')).order_by('projects_total').reverse()
+        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                                   projects_total=Count('projects')).\
+            order_by('projects_total').reverse()
     elif sorting == 'votes':
-        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'), projects_total=Count('projects')).order_by('votes_total').reverse()
+        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                                   projects_total=Count('projects')).order_by('votes_total').reverse()
     else:
         languages_list = Language.objects.order_by('name')
     paginator = Paginator(languages_list, 10)
