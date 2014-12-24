@@ -142,7 +142,7 @@ def projects_view(request, sorting='alphabetical'):
     elif sorting == 'popular':
         projects_list = Project.objects.order_by('upvotes').reverse()
     else:
-        projects_list = Project.objects.order_by('name')
+        projects_list = Project.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
     paginator = Paginator(projects_list, 10)
     try:
         projects = paginator.page(page)
@@ -167,7 +167,7 @@ def languages_view(request, sorting='alphabetical'):
         languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'),
                                                    projects_total=Count('projects')).order_by('votes_total').reverse()
     else:
-        languages_list = Language.objects.order_by('name')
+        languages_list = Language.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
     paginator = Paginator(languages_list, 10)
     try:
         languages = paginator.page(page)
@@ -176,6 +176,31 @@ def languages_view(request, sorting='alphabetical'):
     except EmptyPage:
         languages = paginator.page(paginator.num_pages)
     return render(request, 'languages.html', {'languages_list': languages})
+
+
+def tags_view(request, sorting='alphabetical'):
+    page = request.GET.get('page')
+    if sorting == 'alphabetical':
+        tags_list = Tag.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                         projects_total=Count('projects')).\
+            extra(select={'lowercase_text': 'lower(text)'}).order_by('lowercase_text')
+    elif sorting == 'projects':
+        tags_list = Tag.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                         projects_total=Count('projects')).\
+            order_by('projects_total').reverse()
+    elif sorting == 'votes':
+        tags_list = Tag.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                         projects_total=Count('projects')).order_by('votes_total').reverse()
+    else:
+        tags_list = Tag.objects.extra(select={'lowercase_text': 'lower(text)'}).order_by('lowercase_text')
+    paginator = Paginator(tags_list, 10)
+    try:
+        tags = paginator.page(page)
+    except PageNotAnInteger:
+        tags = paginator.page(1)
+    except EmptyPage:
+        tags = paginator.page(paginator.num_pages)
+    return render(request, 'tags.html', {'tags_list': tags})
 
 
 def main_page(request):
