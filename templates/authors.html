@@ -10,27 +10,27 @@
     <title>projects</title>
 </head>
 <body>
-    Languages
+    Authors
     <div id="content">
         <ul>
-        {% for language in languages_list %}
-            <li>{{ language.name }} total votes: {{ language.votes_total }} total projects: {{ language.projects_total }}
+        {% for author in authors_list %}
+            <li>{{ author.author_name }} total votes: {{ author.votes_total }} total projects: {{ author.projects_total }}
             </li>
         {% endfor %}
         </ul>
 
         <div class="pagination">
             <span class="step-links">
-                {% if languages_list.has_previous %}
-                    <a href="?page={{ languages_list.previous_page_number }}">previous</a>
+                {% if authors_list.has_previous %}
+                    <a href="?page={{ authors_list.previous_page_number }}">previous</a>
                 {% endif %}
 
                 <span class="current">
-                    Page {{ languages_list.number }} of {{ languages_list.paginator.num_pages }}.
+                    Page {{ authors_list.number }} of {{ authors_list.paginator.num_pages }}.
                 </span>
 
-                {% if languages_list.has_next %}
-                    <a href="?page={{ languages_list.next_page_number }}">next</a>
+                {% if authors_list.has_next %}
+                    <a href="?page={{ authors_list.next_page_number }}">next</a>
                 {% endif %}
             </span>
         </div>
