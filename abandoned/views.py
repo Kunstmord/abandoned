@@ -26,6 +26,28 @@ def projects_generic(model_obj, class_instance):
     return Response(serializer.data)
 
 
+def pagination_generic(page, sorting, model_obj, sql_lowercase, lowercase_name):
+    if sorting == 'projects':
+        result_list = model_obj.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                                 projects_total=Count('projects')).\
+            order_by('projects_total').reverse()
+    elif sorting == 'votes':
+        result_list = model_obj.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                                 projects_total=Count('projects')).order_by('votes_total').reverse()
+    else:
+        result_list = model_obj.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                                 projects_total=Count('projects')).\
+            extra(select={lowercase_name: sql_lowercase}).order_by(lowercase_name)
+    paginator = Paginator(result_list, 10)
+    try:
+        result = paginator.page(page)
+    except PageNotAnInteger:
+        result = paginator.page(1)
+    except EmptyPage:
+        result = paginator.page(paginator.num_pages)
+    return result
+
+
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Author.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
     serializer_class = AuthorSerializer
@@ -153,71 +175,22 @@ def projects_view(request, sorting='alphabetical'):
 
 def languages_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
-    if sorting == 'projects':
-        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'),
-                                                   projects_total=Count('projects')).\
-            order_by('projects_total').reverse()
-    elif sorting == 'votes':
-        languages_list = Language.objects.annotate(votes_total=Sum('projects__upvotes'),
-                                                   projects_total=Count('projects')).order_by('votes_total').reverse()
-    else:
-        languages_list = Language.annotate(votes_total=Sum('projects__upvotes'),
-                                         projects_total=Count('projects')).\
-            extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
-    paginator = Paginator(languages_list, 10)
-    try:
-        languages = paginator.page(page)
-    except PageNotAnInteger:
-        languages = paginator.page(1)
-    except EmptyPage:
-        languages = paginator.page(paginator.num_pages)
-    return render(request, 'languages.html', {'languages_list': languages})
+    return render(request, 'languages.html', {'languages_list': pagination_generic(page, sorting, Language,
+                                                                                   'lower(language_name)',
+                                                                                   'lowercase_name')})
 
 
 def tags_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
-    if sorting == 'projects':
-        tags_list = Tag.objects.annotate(votes_total=Sum('projects__upvotes'),
-                                         projects_total=Count('projects')).\
-            order_by('projects_total').reverse()
-    elif sorting == 'votes':
-        tags_list = Tag.objects.annotate(votes_total=Sum('projects__upvotes'),
-                                         projects_total=Count('projects')).order_by('votes_total').reverse()
-    else:
-        tags_list = Tag.objects.annotate(votes_total=Sum('projects__upvotes'),
-                                         projects_total=Count('projects')).\
-            extra(select={'lowercase_text': 'lower(text)'}).order_by('lowercase_text')
-    paginator = Paginator(tags_list, 10)
-    try:
-        tags = paginator.page(page)
-    except PageNotAnInteger:
-        tags = paginator.page(1)
-    except EmptyPage:
-        tags = paginator.page(paginator.num_pages)
-    return render(request, 'tags.html', {'tags_list': tags})
+    return render(request, 'tags.html', {'tags_list': pagination_generic(page, sorting, Tag, 'lower(text)',
+                                                                         'lowercase_text')})
 
 
 def authors_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
-    if sorting == 'projects':
-        authors_list = Author.objects.annotate(votes_total=Sum('projects__upvotes'),
-                                               projects_total=Count('projects')).\
-            order_by('projects_total').reverse()
-    elif sorting == 'votes':
-        authors_list = Author.objects.annotate(votes_total=Sum('projects__upvotes'),
-                                               projects_total=Count('projects')).order_by('votes_total').reverse()
-    else:
-        authors_list = Author.objects.annotate(votes_total=Sum('projects__upvotes'),
-                                               projects_total=Count('projects')).\
-            extra(select={'lowercase_name': 'lower(author_name)'}).order_by('lowercase_name')
-    paginator = Paginator(authors_list, 10)
-    try:
-        authors = paginator.page(page)
-    except PageNotAnInteger:
-        authors = paginator.page(1)
-    except EmptyPage:
-        authors = paginator.page(paginator.num_pages)
-    return render(request, 'authors.html', {'authors_list': authors})
+    return render(request, 'authors.html', {'authors_list': pagination_generic(page, sorting,
+                                                                               Author, 'lower(author_name)',
+                                                                               'lowercase_name')})
 
 
 def main_page(request):
