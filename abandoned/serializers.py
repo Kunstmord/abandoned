@@ -13,7 +13,7 @@ class BaseProjectSerializer(serializers.ModelSerializer):
 class BaseAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        fields = ('id', 'name', 'link',)
+        fields = ('id', 'author_name', 'link',)
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Author
-        fields = ('id', 'name', 'link', 'projects')
+        fields = ('id', 'author_name', 'link', 'projects')
 
 
 class BaseReasonSerializer(serializers.ModelSerializer):
@@ -55,7 +55,7 @@ class TagSerializer(serializers.ModelSerializer):
 class BaseLanguageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Language
-        fields = ('id', 'name',)
+        fields = ('id', 'language_name',)
 
 
 class LanguageSerializer(serializers.ModelSerializer):
@@ -63,7 +63,7 @@ class LanguageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Language
-        fields = ('id', 'name', 'projects')
+        fields = ('id', 'language_name', 'projects')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
