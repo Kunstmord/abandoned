@@ -12,6 +12,9 @@
 <body>
     Languages
     <div id="content">
+        <a href="{% url 'projects-alphabetical' %}">Projects</a>
+        <a href="{% url 'tags-alphabetical' %}">Tags</a>
+        <a href="{% url 'authors-alphabetical' %}">Authors</a>
         <ul>
         {% for language in languages_list %}
             <li>{{ language.name }} total votes: {{ language.votes_total }} total projects: {{ language.projects_total }}

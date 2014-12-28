@@ -12,6 +12,9 @@
 <body>
     Authors
     <div id="content">
+        <a href="{% url 'projects-alphabetical' %}">Projects</a>
+        <a href="{% url 'languages-alphabetical' %}">Languages</a>
+        <a href="{% url 'tags-alphabetical' %}">Tags</a>
         <ul>
         {% for author in authors_list %}
             <li>{{ author.author_name }} total votes: {{ author.votes_total }} total projects: {{ author.projects_total }}

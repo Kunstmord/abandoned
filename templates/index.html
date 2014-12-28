@@ -3,15 +3,19 @@
 <head lang="en">
     <meta charset="UTF-8">
     <script src="{{ STATIC_URL }}libs/jquery-2.1.3.min.js"></script>
-    <script src="{{ STATIC_URL }}libs/react.js"></script>
-    <script src="{{ STATIC_URL }}libs/JSXTransformer.js"></script>
-    <script src="{{ STATIC_URL }}libs/react-router.min.js"></script>
-    <script type="text/jsx" src="{{ STATIC_URL }}ui.js"></script>
+{#    <script src="{{ STATIC_URL }}libs/react.js"></script>#}
+{#    <script src="{{ STATIC_URL }}libs/JSXTransformer.js"></script>#}
+{#    <script src="{{ STATIC_URL }}libs/react-router.min.js"></script>#}
+{#    <script type="text/jsx" src="{{ STATIC_URL }}ui.js"></script>#}
     <title>abandoned.io</title>
 </head>
 <body>
+    Main page
     <div id="content">
-
+        <a href="{% url 'projects-alphabetical' %}">Projects</a>
+        <a href="{% url 'languages-alphabetical' %}">Languages</a>
+        <a href="{% url 'tags-alphabetical' %}">Tags</a>
+        <a href="{% url 'authors-alphabetical' %}">Authors</a>
     </div>
 </body>
 </html>
