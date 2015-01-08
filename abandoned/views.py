@@ -155,11 +155,11 @@ def handle_submit(request):
         return HttpResponseBadRequest("This project is already in the database")
 
 
-def projects_view(request, sorting='alphabetical'):
+def projects_view(request, sorting='latest'):
     page = request.GET.get('page')
     if sorting == 'latest':
         projects_list = Project.objects.order_by('date_added').reverse()
-    elif sorting == 'popular':
+    elif sorting == 'votes':
         projects_list = Project.objects.order_by('upvotes').reverse()
     else:
         projects_list = Project.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
