@@ -22,6 +22,10 @@ class Tag(models.Model):
     def __str__(self):
         return str(self.text)
 
+    def save(self, *args, **kwargs):
+        self.text = self.text.lower()
+        super(Tag, self).save(*args, **kwargs)
+
 
 class Language(models.Model):
     language_name = models.CharField(max_length=100, unique=True)
