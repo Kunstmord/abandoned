@@ -7,7 +7,7 @@
 {#    <script src="{{ STATIC_URL }}libs/JSXTransformer.js"></script>#}
 {#    <script src="{{ STATIC_URL }}libs/react-router.min.js"></script>#}
 {#    <script type="text/jsx" src="{{ STATIC_URL }}ui.js"></script>#}
-    <title>projects</title>
+    <title>Abandoned – Tags</title>
 </head>
 <body>
     Tags
@@ -20,7 +20,7 @@
         <a href="{% url 'authors_alphabetical' %}">Authors</a>
         <ul>
         {% for tag in tags_list %}
-            <li>{{ tag.text }} total votes: {{ tag.votes_total }} total projects: {{ tag.projects_total }}
+            <li><a href="{% url 'tag' tag.id %}">{{ tag.text }}</a> total votes: {{ tag.votes_total }} total projects: {{ tag.projects_total }}
             </li>
         {% endfor %}
         </ul>

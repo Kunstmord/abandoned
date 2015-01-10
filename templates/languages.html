@@ -7,7 +7,7 @@
 {#    <script src="{{ STATIC_URL }}libs/JSXTransformer.js"></script>#}
 {#    <script src="{{ STATIC_URL }}libs/react-router.min.js"></script>#}
 {#    <script type="text/jsx" src="{{ STATIC_URL }}ui.js"></script>#}
-    <title>projects</title>
+    <title>Abandoned – projects</title>
 </head>
 <body>
     Languages
@@ -20,7 +20,9 @@
         <a href="{% url 'authors_alphabetical' %}">Authors</a>
         <ul>
         {% for language in languages_list %}
-            <li>{{ language.name }} total votes: {{ language.votes_total }} total projects: {{ language.projects_total }}
+            <li>{{ language.language_name }} total votes: {{ language.votes_total }} total projects: {{ language.projects_total }}
+
+            <a href="{% url 'language' language.id %}">All projects in this language</a>
             </li>
         {% endfor %}
         </ul>
