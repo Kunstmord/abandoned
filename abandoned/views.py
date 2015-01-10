@@ -3,7 +3,7 @@ from abandoned.models import Project, Tag, Author, Reason, Language
 from abandoned.serializers import TagSerializer, ProjectSerializer, ReasonSerializer, AuthorSerializer, LanguageSerializer
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Sum
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from json import loads
@@ -130,10 +130,13 @@ def handle_submit(request):
     except GithubException as e:
         return HttpResponse(str(e), status=503)
     repo_name, author_name, language = project_data
+    if language is None:
+        language = 'Language not specified'
     author_url = 'https://github.com/' + author_name
     repo_url = 'https://github.com/' + author_name + '/' + repo_name
 
     if not Project.objects.filter(link=repo_url).exists():
+
         curr_reason = Reason.objects.get(id=request_data['reason_id'])
         curr_author, author_created = Author.objects.get_or_create(name=author_name, link=author_url)
         curr_language, language_created = Language.objects.get_or_create(name=language)
@@ -171,6 +174,41 @@ def projects_view(request, sorting='latest'):
     except EmptyPage:
         projects = paginator.page(paginator.num_pages)
     return render(request, 'projects.html', {'projects_list': projects})
+
+
+def single_project_view(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+    except Project.DoesNotExist:
+        raise Http404
+    return render(request, 'single_project.html', {'project': project})
+
+
+def single_author_view(request, author_id):
+    try:
+        author = Author.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                         projects_total=Count('projects')).get(id=author_id)
+    except Author.DoesNotExist:
+        raise Http404
+    return render(request, 'single_author.html', {'author': author})
+
+
+def single_language_view(request, language_id):
+    try:
+        language = Language.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                             projects_total=Count('projects')).get(id=language_id)
+    except Author.DoesNotExist:
+        raise Http404
+    return render(request, 'single_language.html', {'language': language})
+
+
+def single_tag_view(request, tag_id):
+    try:
+        tag = Tag.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                   projects_total=Count('projects')).get(id=tag_id)
+    except Author.DoesNotExist:
+        raise Http404
+    return render(request, 'single_tag.html', {'tag': tag})
 
 
 def languages_view(request, sorting='alphabetical'):
