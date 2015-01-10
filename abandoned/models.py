@@ -6,7 +6,7 @@ class Author(models.Model):
     author_link = models.URLField()
 
     def __str__(self):
-        return str(self.name)
+        return str(self.author_name)
 
 
 class Reason(models.Model):
@@ -31,7 +31,7 @@ class Language(models.Model):
     language_name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.language_name)
 
 
 class Project(models.Model):
