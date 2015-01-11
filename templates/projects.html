@@ -21,7 +21,7 @@
         <ul>
         {% for project in projects_list %}
             <li> <a href="{% url 'project' project.id %}">{{ project.name }}</a>
-                by {{ project.author.author_name }} written in
+                by <a href="{% url 'author' project.author.id %}">{{ project.author.author_name }}</a> written in
                 <a href="{% url 'language' project.language.id %}">{{ project.language.language_name }}</a>,
             {{ project.upvotes }} upvotes, created on {{ project.date_added|date:"d M Y" }}
             <a target="_blank" href="{{ project.link }}">View on Github</a>
