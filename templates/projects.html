@@ -12,8 +12,10 @@
 <body>
     Projects
     <div id="content">
+        <a href="{% url 'projects'  'alphabetical'%}">Projects in alphabetical order</a>
+        <a href="{% url 'projects'  'votes'%}">Projects by amount of votes</a>
+
         <ul>
-            <li><a href="{% url 'projects_latest' %}">Projects</a></li>
             <li><a href="{% url 'languages_alphabetical' %}">Languages</a></li>
             <li><a href="{% url 'tags_alphabetical' %}">Tags</a></li>
             <li><a href="{% url 'authors_alphabetical' %}">Authors</a></li>
