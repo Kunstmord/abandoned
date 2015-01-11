@@ -12,10 +12,15 @@
 <body>
     Main page
     <div id="content">
-        <a href="{% url 'projects_latest' %}">Projects</a>
-        <a href="{% url 'languages_alphabetical' %}">Languages</a>
-        <a href="{% url 'tags_alphabetical' %}">Tags</a>
-        <a href="{% url 'authors_alphabetical' %}">Authors</a>
+        <ul>
+            <li><a href="{% url 'projects_latest' %}">Projects</a></li>
+            <li><a href="{% url 'languages_alphabetical' %}">Languages</a></li>
+            <li><a href="{% url 'tags_alphabetical' %}">Tags</a></li>
+            <li><a href="{% url 'authors_alphabetical' %}">Authors</a></li>
+            <li><a href="{% url 'submit' %}">Add project</a></li>
+        </ul>
     </div>
+
+
 </body>
 </html>

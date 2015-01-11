@@ -17,7 +17,9 @@
             <li><a href="{% url 'languages_alphabetical' %}">Languages</a></li>
             <li><a href="{% url 'tags_alphabetical' %}">Tags</a></li>
             <li><a href="{% url 'authors_alphabetical' %}">Authors</a></li>
+            <li><a href="{% url 'submit' %}">Add project</a></li>
         </ul>
+
         <a target="_blank" href="{{ project.link }}">View on Github</a>
 
         {{ project.name }} by <a href="{% url 'author' project.author.id %}">{{ project.author.author_name }}</a>
