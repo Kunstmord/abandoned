@@ -50,6 +50,17 @@ def pagination_generic(page, sorting, model_obj, sql_lowercase, lowercase_name):
     return result
 
 
+def simple_pagination_generic(page, instance_list):
+    paginator = Paginator(instance_list, 10)
+    try:
+        result = paginator.page(page)
+    except PageNotAnInteger:
+        result = paginator.page(1)
+    except EmptyPage:
+        result = paginator.page(paginator.num_pages)
+    return result
+
+
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Author.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
     serializer_class = AuthorSerializer
@@ -220,11 +231,14 @@ def single_project_view(request, project_id):
 
 def single_author_view(request, author_id):
     try:
+        page = request.GET.get('page')
         author = Author.objects.annotate(votes_total=Sum('projects__upvotes'),
-                                         projects_total=Count('projects')).get(id=author_id)
+                                         projects_total=Count('projects')).prefetch_related('projects').get(id=author_id)
+        # projects = author.projects
     except Author.DoesNotExist:
         raise Http404
-    return render(request, 'single_author.html', {'author': author})
+    return render(request, 'single_author.html', {'author': author,
+                                                  'projects_list': simple_pagination_generic(page, author.projects.all())})
 
 
 def single_language_view(request, language_id):
