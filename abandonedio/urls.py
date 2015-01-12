@@ -25,7 +25,7 @@ urlpatterns = patterns('',
                        url(r'^authors/$', abandoned.views.authors_view, name='authors_alphabetical'),
                        url(r'^authors/(?P<sorting>\w+)/$', abandoned.views.authors_view, name='authors'),
                        url(r'^author/(?P<author_id>\d+)/$', abandoned.views.single_author_view, name='author'),
+                       url(r'^submit/$', abandoned.views.handle_submit, name='submit'),
                        url(r'^', include(router.urls)),
-                       url(r'^api/submit/$', abandoned.views.handle_submit),
                        url(r'^admin/', include(admin.site.urls)),
                        )
