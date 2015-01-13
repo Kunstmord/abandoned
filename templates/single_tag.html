@@ -23,7 +23,7 @@
         {{ tag.text }}
 
         <ul>
-            {% for project in tag.projects.all %}
+            {% for project in projects_list %}
                 <li>
                     <a href="{% url 'project' project.id %}">{{ project.name }}</a>
                         by <a target="_blank" href="{{ project.author.link }}">{{ project.author.author_name }}</a> written in
@@ -32,6 +32,22 @@
                 </li>
             {% endfor %}
         </ul>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if projects_list.has_previous %}
+                    <a href="?page={{ projects_list.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ projects_list.number }} of {{ projects_list.paginator.num_pages }}.
+                </span>
+
+                {% if projects_list.has_next %}
+                    <a href="?page={{ projects_list.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
     </div>
 </body>
 </html>
