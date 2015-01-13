@@ -243,20 +243,24 @@ def single_author_view(request, author_id):
 
 def single_language_view(request, language_id):
     try:
+        page = request.GET.get('page')
         language = Language.objects.annotate(votes_total=Sum('projects__upvotes'),
                                              projects_total=Count('projects')).get(id=language_id)
     except Author.DoesNotExist:
         raise Http404
-    return render(request, 'single_language.html', {'language': language})
+    return render(request, 'single_language.html',
+                  {'language': language, 'projects_list': simple_pagination_generic(page, language.projects.all())})
 
 
 def single_tag_view(request, tag_id):
     try:
+        page = request.GET.get('page')
         tag = Tag.objects.annotate(votes_total=Sum('projects__upvotes'),
                                    projects_total=Count('projects')).get(id=tag_id)
     except Author.DoesNotExist:
         raise Http404
-    return render(request, 'single_tag.html', {'tag': tag})
+    return render(request, 'single_tag.html', {'tag': tag,
+                                               'projects_list': simple_pagination_generic(page, tag.projects.all())})
 
 
 def languages_view(request, sorting='alphabetical'):
