@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="{{ STATIC_URL }}libs/jquery-2.1.3.min.js"></script>
+{#    <script src="{{ STATIC_URL }}libs/react.js"></script>#}
+{#    <script src="{{ STATIC_URL }}libs/JSXTransformer.js"></script>#}
+{#    <script src="{{ STATIC_URL }}libs/react-router.min.js"></script>#}
+{#    <script type="text/jsx" src="{{ STATIC_URL }}ui.js"></script>#}
+    <title>Abandoned – Reasons</title>
+</head>
+<body>
+    Languages
+    <div id="content">
+        <a href="{% url 'reasons'  'votes'%}">Reasons by amount of votes</a>
+        <a href="{% url 'reasons'  'projects'%}">Reasons by amount of projects</a>
+        <ul>
+            <li><a href="{% url 'projects_latest' %}">Projects</a></li>
+            <li><a href="{% url 'tags_alphabetical' %}">Tags</a></li>
+            <li><a href="{% url 'authors_alphabetical' %}">Authors</a></li>
+            <li><a href="{% url 'submit' %}">Add project</a></li>
+        </ul>
+
+        <ul>
+        {% for reason in reasons_list %}
+            <li>{{ reason.reason }} total votes: {{ reason.votes_total }} total projects: {{ reason.projects_total }}
+
+            <a href="{% url 'reason' reason.id %}">All projects abandoned for this reason</a>
+            </li>
+        {% endfor %}
+        </ul>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if reasons_list.has_previous %}
+                    <a href="?page={{ reasons_list.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ reasons_list.number }} of {{ reasons_list.paginator.num_pages }}.
+                </span>
+
+                {% if reasons_list.has_next %}
+                    <a href="?page={{ reasons_list.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</body>
+</html>
