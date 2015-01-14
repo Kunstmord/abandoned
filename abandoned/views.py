@@ -246,7 +246,7 @@ def single_language_view(request, language_id):
         page = request.GET.get('page')
         language = Language.objects.annotate(votes_total=Sum('projects__upvotes'),
                                              projects_total=Count('projects')).get(id=language_id)
-    except Author.DoesNotExist:
+    except Language.DoesNotExist:
         raise Http404
     return render(request, 'single_language.html',
                   {'language': language, 'projects_list': simple_pagination_generic(page, language.projects.all())})
@@ -257,10 +257,22 @@ def single_tag_view(request, tag_id):
         page = request.GET.get('page')
         tag = Tag.objects.annotate(votes_total=Sum('projects__upvotes'),
                                    projects_total=Count('projects')).get(id=tag_id)
-    except Author.DoesNotExist:
+    except Tag.DoesNotExist:
         raise Http404
     return render(request, 'single_tag.html', {'tag': tag,
                                                'projects_list': simple_pagination_generic(page, tag.projects.all())})
+
+
+def single_reason_view(request, reason_id):
+    try:
+        page = request.GET.get('page')
+        reason = Reason.objects.annotate(votes_total=Sum('projects__upvotes'),
+                                         projects_total=Count('projects')).get(id=reason_id)
+    except Reason.DoesNotExist:
+        raise Http404
+    return render(request, 'single_reason.html', {'reason': reason,
+                                                  'projects_list': simple_pagination_generic(page,
+                                                                                             reason.projects.all())})
 
 
 def languages_view(request, sorting='alphabetical'):
@@ -281,6 +293,13 @@ def authors_view(request, sorting='alphabetical'):
     return render(request, 'authors.html', {'authors_list': pagination_generic(page, sorting,
                                                                                Author, 'lower(author_name)',
                                                                                'lowercase_name')})
+
+
+def reasons_view(request, sorting='alphabetical'):
+    page = request.GET.get('page')
+    return render(request, 'reasons.html', {'reasons_list': pagination_generic(page, sorting,
+                                                                               Reason, 'lower(reason)',
+                                                                               'lowercase_text')})
 
 
 def main_page(request):
