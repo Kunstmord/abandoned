@@ -12,9 +12,16 @@
 <body>
     Tags
     <div id="content">
-        <a href="{% url 'tags'  'votes'%}">Tags by amount of votes</a>
-        <a href="{% url 'tags'  'projects'%}">Tags by amount of projects</a>
-
+        {% if sorting == 'alphabetical' %}
+            <a href="{% url 'tags'  'votes'%}">Tags by amount of votes</a>
+            <a href="{% url 'tags'  'projects'%}">Tags by amount of projects</a>
+        {% elif sorting == 'votes'%}
+            <a href="{% url 'tags'  'alphabetical'%}">Tags in alphabetical order</a>
+            <a href="{% url 'tags'  'projects'%}">Tags by amount of projects</a>
+        {% elif sorting == 'projects' %}
+            <a href="{% url 'tags'  'votes'%}">Tags by amount of votes</a>
+            <a href="{% url 'tags'  'alphabetical'%}">Tags in alphabetical order</a>
+        {% endif %}
         <ul>
             <li><a href="{% url 'projects_latest' %}">Projects</a></li>
             <li><a href="{% url 'languages_alphabetical' %}">Languages</a></li>

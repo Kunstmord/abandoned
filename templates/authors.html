@@ -12,8 +12,17 @@
 <body>
     Authors
     <div id="content">
-        <a href="{% url 'authors'  'votes'%}">Authors by amount of votes</a>
-        <a href="{% url 'authors'  'projects'%}">Authors by amount of projects</a>
+
+        {% if sorting == 'alphabetical' %}
+            <a href="{% url 'authors'  'votes'%}">Authors by amount of votes</a>
+            <a href="{% url 'authors'  'projects'%}">Authors by amount of projects</a>
+        {% elif sorting == 'votes' %}
+            <a href="{% url 'authors_alphabetical'%}">Authors in alphabetical order</a>
+            <a href="{% url 'authors'  'projects'%}">Authors by amount of projects</a>
+        {% elif sorting == 'projects' %}
+            <a href="{% url 'authors'  'votes'%}">Authors by amount of votes</a>
+            <a href="{% url 'authors_alphabetical'%}">Authors in alphabetical order</a>
+        {% endif %}
 
         <ul>
             <li><a href="{% url 'projects_latest' %}">Projects</a></li>

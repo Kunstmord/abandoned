@@ -12,9 +12,17 @@
 <body>
     Projects
     <div id="content">
-        <a href="{% url 'projects'  'alphabetical'%}">Projects in alphabetical order</a>
-        <a href="{% url 'projects'  'votes'%}">Projects by amount of votes</a>
 
+        {% if sorting == 'latest' %}
+            <a href="{% url 'projects'  'alphabetical'%}">Projects in alphabetical order</a>
+            <a href="{% url 'projects'  'votes'%}">Projects by amount of votes</a>
+        {% elif sorting == 'votes' %}
+            <a href="{% url 'projects'  'alphabetical'%}">Projects in alphabetical order</a>
+            <a href="{% url 'projects'  'alphabetical'%}">Latest projects</a>
+        {% elif sorting == 'alphabetical'%}
+            <a href="{% url 'projects'  'latest'%}">Latest projects</a>
+            <a href="{% url 'projects'  'votes'%}">Projects by amount of votes</a>
+        {% endif %}
         <ul>
             <li><a href="{% url 'languages_alphabetical' %}">Languages</a></li>
             <li><a href="{% url 'tags_alphabetical' %}">Tags</a></li>

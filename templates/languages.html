@@ -12,8 +12,17 @@
 <body>
     Languages
     <div id="content">
-        <a href="{% url 'languages'  'votes'%}">Languages by amount of votes</a>
-        <a href="{% url 'languages'  'projects'%}">Languages by amount of projects</a>
+
+        {% if sorting == 'alphabetical' %}
+            <a href="{% url 'languages'  'votes'%}">Languages by amount of votes</a>
+            <a href="{% url 'languages'  'projects'%}">Languages by amount of projects</a>
+        {% elif sorting == 'votes'%}
+            <a href="{% url 'languages'  'alphabetical'%}">Languages in alphabetical order</a>
+            <a href="{% url 'languages'  'projects'%}">Languages by amount of projects</a>
+        {% elif sorting == 'projects' %}
+            <a href="{% url 'languages'  'votes'%}">Languages by amount of votes</a>
+            <a href="{% url 'languages'  'alphabetical'%}">Languages in alphabetical order</a>
+        {% endif %}
         <ul>
             <li><a href="{% url 'projects_latest' %}">Projects</a></li>
             <li><a href="{% url 'tags_alphabetical' %}">Tags</a></li>
