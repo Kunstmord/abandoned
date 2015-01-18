@@ -295,7 +295,7 @@ def projects_view(request, sorting='latest'):
         projects = paginator.page(1)
     except EmptyPage:
         projects = paginator.page(paginator.num_pages)
-    return render(request, 'projects.html', {'projects_list': projects})
+    return render(request, 'projects.html', {'projects_list': projects, 'sorting': sorting})
 
 
 def reasons_view(request, sorting='alphabetical'):
