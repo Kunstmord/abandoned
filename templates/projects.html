@@ -18,9 +18,9 @@
             <a href="{% url 'projects'  'votes'%}">Projects by amount of votes</a>
         {% elif sorting == 'votes' %}
             <a href="{% url 'projects'  'alphabetical'%}">Projects in alphabetical order</a>
-            <a href="{% url 'projects'  'alphabetical'%}">Latest projects</a>
+            <a href="{% url 'projects_latest'%}">Latest projects</a>
         {% elif sorting == 'alphabetical'%}
-            <a href="{% url 'projects'  'latest'%}">Latest projects</a>
+            <a href="{% url 'projects_latest'%}">Latest projects</a>
             <a href="{% url 'projects'  'votes'%}">Projects by amount of votes</a>
         {% endif %}
         <ul>
