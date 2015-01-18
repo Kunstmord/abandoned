@@ -203,24 +203,6 @@ def handle_submit(request):
     #     return HttpResponseBadRequest("This project is already in the database")
 
 
-def projects_view(request, sorting='latest'):
-    page = request.GET.get('page')
-    if sorting == 'latest':
-        projects_list = Project.objects.order_by('date_added').reverse()
-    elif sorting == 'votes':
-        projects_list = Project.objects.order_by('upvotes').reverse()
-    else:
-        projects_list = Project.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
-    paginator = Paginator(projects_list, 10)
-    try:
-        projects = paginator.page(page)
-    except PageNotAnInteger:
-        projects = paginator.page(1)
-    except EmptyPage:
-        projects = paginator.page(paginator.num_pages)
-    return render(request, 'projects.html', {'projects_list': projects})
-
-
 def single_project_view(request, project_id):
     try:
         project = Project.objects.get(id=project_id)
@@ -279,27 +261,49 @@ def languages_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
     return render(request, 'languages.html', {'languages_list': pagination_generic(page, sorting, Language,
                                                                                    'lower(language_name)',
-                                                                                   'lowercase_name')})
+                                                                                   'lowercase_name'),
+                                              'sorting': sorting})
 
 
 def tags_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
     return render(request, 'tags.html', {'tags_list': pagination_generic(page, sorting, Tag, 'lower(text)',
-                                                                         'lowercase_text')})
+                                                                         'lowercase_text'),
+                                         'sorting': sorting})
 
 
 def authors_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
     return render(request, 'authors.html', {'authors_list': pagination_generic(page, sorting,
                                                                                Author, 'lower(author_name)',
-                                                                               'lowercase_name')})
+                                                                               'lowercase_name'),
+                                            'sorting': sorting})
+
+
+def projects_view(request, sorting='latest'):
+    page = request.GET.get('page')
+    if sorting == 'latest':
+        projects_list = Project.objects.order_by('date_added').reverse()
+    elif sorting == 'votes':
+        projects_list = Project.objects.order_by('upvotes').reverse()
+    else:
+        projects_list = Project.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
+    paginator = Paginator(projects_list, 10)
+    try:
+        projects = paginator.page(page)
+    except PageNotAnInteger:
+        projects = paginator.page(1)
+    except EmptyPage:
+        projects = paginator.page(paginator.num_pages)
+    return render(request, 'projects.html', {'projects_list': projects})
 
 
 def reasons_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
     return render(request, 'reasons.html', {'reasons_list': pagination_generic(page, sorting,
                                                                                Reason, 'lower(reason)',
-                                                                               'lowercase_text')})
+                                                                               'lowercase_text'),
+                                            'sorting': sorting})
 
 
 def main_page(request):
