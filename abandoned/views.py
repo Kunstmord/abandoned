@@ -5,10 +5,9 @@ from abandoned.serializers import TagSerializer, ProjectSerializer, ReasonSerial
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Sum
-from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_protect
-from json import loads
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import viewsets
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
@@ -203,6 +202,18 @@ def handle_submit(request):
     #     return HttpResponseBadRequest("This project is already in the database")
 
 
+def handle_upvote(request):
+    if request.method == 'POST':
+        try:
+            project = Project.objects.get(id=request.POST['id'])
+            project.upvotes += 1
+            project.save()
+            return JsonResponse({'upvotes': project.upvotes}, status=200)
+        except Project.DoesNotExist:
+            raise Http404
+
+
+@ensure_csrf_cookie
 def single_project_view(request, project_id):
     try:
         project = Project.objects.get(id=project_id)
@@ -216,7 +227,6 @@ def single_author_view(request, author_id):
         page = request.GET.get('page')
         author = Author.objects.annotate(votes_total=Sum('projects__upvotes'),
                                          projects_total=Count('projects')).prefetch_related('projects').get(id=author_id)
-        # projects = author.projects
     except Author.DoesNotExist:
         raise Http404
     return render(request, 'single_author.html', {'author': author,
