@@ -3,6 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <script src="{{ STATIC_URL }}libs/jquery-2.1.3.min.js"></script>
+    <script src="{{ STATIC_URL }}upvotes.js"></script>
 {#    <script src="{{ STATIC_URL }}libs/react.js"></script>#}
 {#    <script src="{{ STATIC_URL }}libs/JSXTransformer.js"></script>#}
 {#    <script src="{{ STATIC_URL }}libs/react-router.min.js"></script>#}
@@ -35,6 +36,8 @@
         Tags: {% for tag in project.tags.all %}
             <a href="{% url 'tag' tag.id %}">{{ tag.text }}</a>
         {% endfor %}
+
+        <div id="upvote_button" data-project-id="{{ project.id }}">Upvote this project</div>
     </div>
 </body>
 </html>
