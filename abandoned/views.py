@@ -134,72 +134,49 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
 def handle_submit(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
-        # print(form.)
         if form.is_valid():
             repo_url = form.cleaned_data['link']
-            project_data = get_project_data(repo_url)
+            try:
+                project_data = get_project_data(repo_url)
+            except AbandonedException as e:
+                return render(request, 'submit.html', {'form': form, 'error_message': e.args[0]})
+            except GithubException as e:
+                return render(request, 'submit.html', {'form': form, 'error_message': e.args[0]})
             repo_name, author_name, language = project_data
             if language is None:
                 language = 'Language not specified'
             author_url = 'https://github.com/' + author_name
             repo_url = 'https://github.com/' + author_name + '/' + repo_name
 
-            if not Project.objects.filter(link=repo_url).exists():
-                curr_author, author_created = Author.objects.get_or_create(author_name=author_name,
-                                                                           author_link=author_url)
-                curr_language, language_created = Language.objects.get_or_create(language_name=language)
+            # if not Project.objects.filter(link=repo_url).exists():
+            curr_author, author_created = Author.objects.get_or_create(author_name=author_name,
+                                                                       author_link=author_url)
+            curr_language, language_created = Language.objects.get_or_create(language_name=language)
 
-                tags_list = form.cleaned_data['tags_textfield'].split(',')
+            tags_list = form.cleaned_data['tags_textfield'].split(',')
 
-                for i, tag_text in enumerate(tags_list):
-                    tag_text = tag_text.strip()
-                    tags_list[i] = tag_text
-                    curr_tag, tag_created = Tag.objects.get_or_create(text=tag_text)
-                    tags_list[i] = curr_tag
+            for i, tag_text in enumerate(tags_list):
+                tag_text = tag_text.strip()
+                tags_list[i] = tag_text
+                curr_tag, tag_created = Tag.objects.get_or_create(text=tag_text)
+                tags_list[i] = curr_tag
 
-                curr_project = Project.objects.create(name=repo_name, link=repo_url, author=curr_author,
-                                                      description=form.cleaned_data['description'],
-                                                      reason=form.cleaned_data['reason'], language=curr_language)
-                for tag in tags_list:
-                    curr_project.tags.add(tag)
-                return HttpResponseRedirect(reverse('abandoned.views.single_project_view', args=(curr_project.id,)))
+            curr_project = Project.objects.create(name=repo_name, link=repo_url, author=curr_author,
+                                                  description=form.cleaned_data['description'],
+                                                  reason=form.cleaned_data['reason'], language=curr_language)
+            for tag in tags_list:
+                curr_project.tags.add(tag)
+            return HttpResponseRedirect(reverse('abandoned.views.single_project_view', args=(curr_project.id,)))
+            # else:
+            #     prj_id = Project.objects.get(link=repo_url).id
+            #     err_msg = 'This project is already in the database'
+            #     return render(request, 'submit.html', {'form': form, 'error_message': err_msg,
+            #                                            'prj_id': prj_id})
+        else:
+            return render(request, 'submit.html', {'form': form, 'render_other_errors': True})
     else:
         form = ProjectForm()
         return render(request, 'submit.html', {'form': form})
-    # request_data = loads(request.body.decode('utf-8'))
-    # try:
-    #     project_data = get_project_data(request_data['repo_url'])
-    # except AbandonedException as e:
-    #     return HttpResponseBadRequest(str(e))
-    # except GithubException as e:
-    #     return HttpResponse(str(e), status=503)
-    # repo_name, author_name, language = project_data
-    # if language is None:
-    #     language = 'Language not specified'
-    # author_url = 'https://github.com/' + author_name
-    # repo_url = 'https://github.com/' + author_name + '/' + repo_name
-    #
-    # if not Project.objects.filter(link=repo_url).exists():
-    #
-    #     curr_reason = Reason.objects.get(id=request_data['reason_id'])
-    #     curr_author, author_created = Author.objects.get_or_create(name=author_name, link=author_url)
-    #     curr_language, language_created = Language.objects.get_or_create(name=language)
-    #
-    #     tags_list = []
-    #     for tag_text in request_data['tags']:
-    #         curr_tag, tag_created = Tag.objects.get_or_create(text=tag_text)
-    #         tags_list.append(curr_tag)
-    #
-    #     curr_project = Project.objects.create(name=repo_name, link=repo_url, author=curr_author,
-    #                                           description=request_data['description'],
-    #                                           reason=curr_reason, language=curr_language)
-    #     for tag in tags_list:
-    #         curr_project.tags.add(tag)
-    #     curr_project.save()
-    #     serializer = ProjectSerializer(curr_project)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-    # else:
-    #     return HttpResponseBadRequest("This project is already in the database")
 
 
 def handle_upvote(request):
