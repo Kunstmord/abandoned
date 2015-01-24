@@ -19,11 +19,16 @@
             <li><a href="{% url 'authors_alphabetical' %}">Authors</a></li>
         </ul>
 
+        {{ error_message }}
         <form action="/submit/" method="post">
             {% csrf_token %}
             {{ form }}
             <input type="submit" value="Submit" />
         </form>
+
+        {% if render_other_errors %}
+            {{ form.errors }}
+        {% endif %}
     </div>
 </body>
 </html>
