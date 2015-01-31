@@ -20,15 +20,14 @@
         </ul>
 
         {{ error_message }}
+        {% if project_id %}
+            This project is already in the database, you can view it <a href="{% url 'project' project_id %}">here</a>
+        {% endif %}
         <form action="/submit/" method="post">
             {% csrf_token %}
             {{ form }}
             <input type="submit" value="Submit" />
         </form>
-
-        {% if render_other_errors %}
-            {{ form.errors }}
-        {% endif %}
     </div>
 </body>
 </html>
