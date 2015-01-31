@@ -148,32 +148,30 @@ def handle_submit(request):
             author_url = 'https://github.com/' + author_name
             repo_url = 'https://github.com/' + author_name + '/' + repo_name
 
-            # if not Project.objects.filter(link=repo_url).exists():
-            curr_author, author_created = Author.objects.get_or_create(author_name=author_name,
-                                                                       author_link=author_url)
-            curr_language, language_created = Language.objects.get_or_create(language_name=language)
+            if not Project.objects.filter(link=repo_url).exists():
+                curr_author, author_created = Author.objects.get_or_create(author_name=author_name,
+                                                                           author_link=author_url)
+                curr_language, language_created = Language.objects.get_or_create(language_name=language)
 
-            tags_list = form.cleaned_data['tags_textfield'].split(',')
+                tags_list = form.cleaned_data['tags_textfield'].split(',')
 
-            for i, tag_text in enumerate(tags_list):
-                tag_text = tag_text.strip()
-                tags_list[i] = tag_text
-                curr_tag, tag_created = Tag.objects.get_or_create(text=tag_text)
-                tags_list[i] = curr_tag
+                for i, tag_text in enumerate(tags_list):
+                    tag_text = tag_text.strip()
+                    tags_list[i] = tag_text
+                    curr_tag, tag_created = Tag.objects.get_or_create(text=tag_text)
+                    tags_list[i] = curr_tag
 
-            curr_project = Project.objects.create(name=repo_name, link=repo_url, author=curr_author,
-                                                  description=form.cleaned_data['description'],
-                                                  reason=form.cleaned_data['reason'], language=curr_language)
-            for tag in tags_list:
-                curr_project.tags.add(tag)
-            return HttpResponseRedirect(reverse('abandoned.views.single_project_view', args=(curr_project.id,)))
-            # else:
-            #     prj_id = Project.objects.get(link=repo_url).id
-            #     err_msg = 'This project is already in the database'
-            #     return render(request, 'submit.html', {'form': form, 'error_message': err_msg,
-            #                                            'prj_id': prj_id})
+                curr_project = Project.objects.create(name=repo_name, link=repo_url, author=curr_author,
+                                                      description=form.cleaned_data['description'],
+                                                      reason=form.cleaned_data['reason'], language=curr_language)
+                for tag in tags_list:
+                    curr_project.tags.add(tag)
+                return HttpResponseRedirect(reverse('abandoned.views.single_project_view', args=(curr_project.id,)))
+            else:
+                prj_id = Project.objects.get(link=repo_url).id
+                return render(request, 'submit.html', {'form': form, 'project_id': prj_id})
         else:
-            return render(request, 'submit.html', {'form': form, 'render_other_errors': True})
+            return render(request, 'submit.html', {'form': form})
     else:
         form = ProjectForm()
         return render(request, 'submit.html', {'form': form})
