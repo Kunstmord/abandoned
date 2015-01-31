@@ -36,7 +36,7 @@ class Language(models.Model):
 
 class Project(models.Model):
     name = models.CharField(max_length=400)
-    link = models.URLField(unique=True)
+    link = models.URLField()
     author = models.ForeignKey(Author, related_name='projects')
     description = models.TextField()
     reason = models.ForeignKey(Reason, related_name='projects')
