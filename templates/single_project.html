@@ -37,7 +37,7 @@
             <a href="{% url 'tag' tag.id %}">{{ tag.text }}</a>
         {% endfor %}
 
-        <div id="upvote_button" data-project-id="{{ project.id }}">Upvote this project</div>
+        <button id="upvote_button" data-project-id="{{ project.id }}">Upvote this project</button>
     </div>
 </body>
 </html>
