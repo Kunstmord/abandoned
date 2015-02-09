@@ -41,22 +41,22 @@ def pagination_generic(page, sorting, model_obj, sql_lowercase, lowercase_name):
             extra(select={lowercase_name: sql_lowercase}).order_by(lowercase_name)
     paginator = Paginator(result_list, 10)
     try:
-        result = paginator.page(page)
+        result = [paginator.page(page), int(page)]
     except PageNotAnInteger:
-        result = paginator.page(1)
+        result = [paginator.page(1), 1]
     except EmptyPage:
-        result = paginator.page(paginator.num_pages)
+        result = [paginator.page(paginator.num_pages), paginator.num_pages]
     return result
 
 
 def simple_pagination_generic(page, instance_list):
     paginator = Paginator(instance_list, 10)
     try:
-        result = paginator.page(page)
+        result = [paginator.page(page), int(page)]
     except PageNotAnInteger:
-        result = paginator.page(1)
+        result = [paginator.page(1), 1]
     except EmptyPage:
-        result = paginator.page(paginator.num_pages)
+        result = [paginator.page(paginator.num_pages), paginator.num_pages]
     return result
 
 
@@ -204,8 +204,9 @@ def single_author_view(request, author_id):
                                          projects_total=Count('projects')).prefetch_related('projects').get(id=author_id)
     except Author.DoesNotExist:
         raise Http404
-    return render(request, 'single_author.html', {'author': author,
-                                                  'projects_list': simple_pagination_generic(page, author.projects.all())})
+    pg = simple_pagination_generic(page, author.projects.all())
+    return render(request, 'single_author.html', {'author': author, 'projects_list': pg[0],
+                                                  's_item':(pg[1] - 1) * 10 + 1})
 
 
 def single_language_view(request, language_id):
@@ -215,8 +216,9 @@ def single_language_view(request, language_id):
                                              projects_total=Count('projects')).get(id=language_id)
     except Language.DoesNotExist:
         raise Http404
+    pg = simple_pagination_generic(page, language.projects.all())
     return render(request, 'single_language.html',
-                  {'language': language, 'projects_list': simple_pagination_generic(page, language.projects.all())})
+                  {'language': language, 'projects_list': pg[0], 's_item': (pg[1] - 1) * 10 + 1})
 
 
 def single_tag_view(request, tag_id):
@@ -226,8 +228,8 @@ def single_tag_view(request, tag_id):
                                    projects_total=Count('projects')).get(id=tag_id)
     except Tag.DoesNotExist:
         raise Http404
-    return render(request, 'single_tag.html', {'tag': tag,
-                                               'projects_list': simple_pagination_generic(page, tag.projects.all())})
+    pg = simple_pagination_generic(page, tag.projects.all())
+    return render(request, 'single_tag.html', {'tag': tag, 'projects_list': pg[0], 's_item': (pg[1] - 1) * 10 + 1})
 
 
 def single_reason_view(request, reason_id):
@@ -237,32 +239,28 @@ def single_reason_view(request, reason_id):
                                          projects_total=Count('projects')).get(id=reason_id)
     except Reason.DoesNotExist:
         raise Http404
-    return render(request, 'single_reason.html', {'reason': reason,
-                                                  'projects_list': simple_pagination_generic(page,
-                                                                                             reason.projects.all())})
+    pg = simple_pagination_generic(page, reason.projects.all())
+    return render(request, 'single_reason.html', {'reason': reason, 'projects_list': pg[0],
+                                                  's_item': (pg[1] - 1) * 10 + 1})
 
 
 def languages_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
-    return render(request, 'languages.html', {'languages_list': pagination_generic(page, sorting, Language,
-                                                                                   'lower(language_name)',
-                                                                                   'lowercase_name'),
+    pg = pagination_generic(page, sorting, Language, 'lower(language_name)', 'lowercase_name')
+    return render(request, 'languages.html', {'languages_list': pg[0], 's_item': (pg[1] - 1) * 10 + 1,
                                               'sorting': sorting})
 
 
 def tags_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
-    return render(request, 'tags.html', {'tags_list': pagination_generic(page, sorting, Tag, 'lower(text)',
-                                                                         'lowercase_text'),
-                                         'sorting': sorting})
+    pg = pagination_generic(page, sorting, Tag, 'lower(text)', 'lowercase_text')
+    return render(request, 'tags.html', {'tags_list': pg[0], 's_item': (pg[1] - 1) * 10 + 1, 'sorting': sorting})
 
 
 def authors_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
-    return render(request, 'authors.html', {'authors_list': pagination_generic(page, sorting,
-                                                                               Author, 'lower(author_name)',
-                                                                               'lowercase_name'),
-                                            'sorting': sorting})
+    pg = pagination_generic(page, sorting, Author, 'lower(author_name)', 'lowercase_name')
+    return render(request, 'authors.html', {'authors_list': pg[0], 's_item': (pg[1] - 1) * 10 + 1, 'sorting': sorting})
 
 
 def projects_view(request, sorting='latest'):
@@ -276,18 +274,21 @@ def projects_view(request, sorting='latest'):
     paginator = Paginator(projects_list, 10)
     try:
         projects = paginator.page(page)
+        pg_num = int(page)
     except PageNotAnInteger:
         projects = paginator.page(1)
+        pg_num = 1
     except EmptyPage:
         projects = paginator.page(paginator.num_pages)
-    return render(request, 'projects.html', {'projects_list': projects, 'sorting': sorting})
+        pg_num = paginator.num_pages
+    return render(request, 'projects.html', {'projects_list': projects, 's_item': (pg_num - 1) * 10 + 1,
+                                             'sorting': sorting})
 
 
 def reasons_view(request, sorting='alphabetical'):
     page = request.GET.get('page')
-    return render(request, 'reasons.html', {'reasons_list': pagination_generic(page, sorting,
-                                                                               Reason, 'lower(reason)',
-                                                                               'lowercase_text'),
+    pg = pagination_generic(page, sorting, Reason, 'lower(reason)', 'lowercase_text')
+    return render(request, 'reasons.html', {'reasons_list': pg[0], 's_item': (pg[1] - 1) * 10 + 1,
                                             'sorting': sorting})
 
 
