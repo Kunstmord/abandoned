@@ -6,17 +6,17 @@
     <title>abandoned.io</title>
 </head>
 <body style="margin: 0;">
-    <div id="content" style="-moz-box-align: center; -moz-box-pack: center; display: -moz-box; height: 100vh; width: 100vw;">
-        <div id="title">
-            <div id="title-top" style="text-align: center;">abandoned.me</div>
+    <div id="content" style="align-content: center; justify-content: center; display: flex; height: 100vh; width: 100vw; flex-wrap: wrap;">
+        <div id="title" style="width: 100vw; height: 90px;">
+            <div id="title-top" style="text-align: center; font-size: 40pt">abandoned.me</div>
             <div id="title-lower" style="text-align: center;">A list of abandoned open-source projects</div>
         </div>
 
-        <a href="{% url 'projects_latest' %}">Projects</a>
-        <a href="{% url 'languages_alphabetical' %}">Languages</a>
-        <a href="{% url 'tags_alphabetical' %}">Tags</a>
-        <a href="{% url 'authors_alphabetical' %}">Authors</a>
-        <a href="{% url 'reasons_alphabetical' %}">Reasons</a>
+        <a href="{% url 'projects_latest' %}">Projects</a> /
+        <a href="{% url 'languages_alphabetical' %}">Languages</a> /
+        <a href="{% url 'tags_alphabetical' %}">Tags</a> /
+        <a href="{% url 'authors_alphabetical' %}">Authors</a> /
+        <a href="{% url 'reasons_alphabetical' %}">Reasons</a> /
         <a href="{% url 'submit' %}">Add project</a>
     </div>
 

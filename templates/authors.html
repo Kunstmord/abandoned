@@ -9,39 +9,52 @@
 {#    <script type="text/jsx" src="{{ STATIC_URL }}ui.js"></script>#}
     <title>Abandoned – Authors</title>
 </head>
-<body>
-    Authors
-    <div id="content">
+<body style="margin: 0;">
+    <div id="content" style="align-content: center; justify-content: center; display: flex; height: 100vh; width: 100vw; flex-wrap: wrap;">
+        <div style="height: 36px; width: 100vw; display: flex;">
+            <div style="margin-left: auto; margin-right: auto;">
+                <a href="{% url 'projects_latest' %}">Projects</a> /
+                <a href="{% url 'languages_alphabetical' %}">Languages</a> /
+                <a href="{% url 'tags_alphabetical' %}">Tags</a> /
+                <a href="{% url 'reasons_alphabetical' %}">Reasons</a> /
+                <a href="{% url 'submit' %}">Add project</a>
+            </div>
+        </div>
+        <br />
+{#    #}
+{#        <a href="{% url 'projects_latest' %}">Projects</a>#}
+{#            <li><a href="{% url 'languages_alphabetical' %}">Languages</a></li>#}
+{#            <li><a href="{% url 'tags_alphabetical' %}">Tags</a></li>#}
+{#            <li><a href="{% url 'reasons_alphabetical' %}">Reasons</a></li>#}
+{#            <li><a href="{% url 'submit' %}">Add project</a></li>#}
+{#        </ul>#}
+        <div style="width: 100vw; display: flex;">
+            <div style="margin-left: auto; margin-right: auto;">
+                {% if sorting == 'alphabetical' %}
+                    <a href="{% url 'authors'  'votes'%}">Authors by amount of votes</a> /
+                    <a href="{% url 'authors'  'projects'%}">Authors by amount of projects</a>
+                {% elif sorting == 'votes' %}
+                    <a href="{% url 'authors_alphabetical'%}">Authors in alphabetical order</a> /
+                    <a href="{% url 'authors'  'projects'%}">Authors by amount of projects</a>
+                {% elif sorting == 'projects' %}
+                    <a href="{% url 'authors'  'votes'%}">Authors by amount of votes</a> /
+                    <a href="{% url 'authors_alphabetical'%}">Authors in alphabetical order</a>
+                {% endif %}
+            </div>
+        </div>
 
-        {% if sorting == 'alphabetical' %}
-            <a href="{% url 'authors'  'votes'%}">Authors by amount of votes</a>
-            <a href="{% url 'authors'  'projects'%}">Authors by amount of projects</a>
-        {% elif sorting == 'votes' %}
-            <a href="{% url 'authors_alphabetical'%}">Authors in alphabetical order</a>
-            <a href="{% url 'authors'  'projects'%}">Authors by amount of projects</a>
-        {% elif sorting == 'projects' %}
-            <a href="{% url 'authors'  'votes'%}">Authors by amount of votes</a>
-            <a href="{% url 'authors_alphabetical'%}">Authors in alphabetical order</a>
-        {% endif %}
-
-        <ul>
-            <li><a href="{% url 'projects_latest' %}">Projects</a></li>
-            <li><a href="{% url 'languages_alphabetical' %}">Languages</a></li>
-            <li><a href="{% url 'tags_alphabetical' %}">Tags</a></li>
-            <li><a href="{% url 'reasons_alphabetical' %}">Reasons</a></li>
-            <li><a href="{% url 'submit' %}">Add project</a></li>
-        </ul>
-
-        <ul>
-        {% for author in authors_list %}
-            <li><a href="{% url 'author' author.id %}">{{ author.author_name }}</a>
-                total votes: {{ author.votes_total }} total projects: {{ author.projects_total }}
+        <div style="width: 100vw; display: flex;">
+            <ul style="margin-left: auto; margin-right: auto;">
+            {% for author in authors_list %}
+                <li><a href="{% url 'author' author.id %}">{{ author.author_name }}</a>
+                    total votes: {{ author.votes_total }} total projects: {{ author.projects_total }}
 
 
-            <a target="_blank" href="{{ author.author_link }}">View on Github</a>
-            </li>
-        {% endfor %}
-        </ul>
+                <a target="_blank" href="{{ author.author_link }}">View on Github</a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
 
         <div class="pagination">
             <span class="step-links">
