@@ -2,40 +2,50 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <script src="{{ STATIC_URL }}libs/jquery-2.1.3.min.js"></script>
-{#    <script src="{{ STATIC_URL }}libs/react.js"></script>#}
-{#    <script src="{{ STATIC_URL }}libs/JSXTransformer.js"></script>#}
-{#    <script src="{{ STATIC_URL }}libs/react-router.min.js"></script>#}
-{#    <script type="text/jsx" src="{{ STATIC_URL }}ui.js"></script>#}
+    <link href="{{ STATIC_URL }}design.css" type="text/css" rel="stylesheet" />
     <title>Abandoned – Tags</title>
 </head>
 <body>
-    Tags
     <div id="content">
-        {% if sorting == 'alphabetical' %}
-            <a href="{% url 'tags'  'votes'%}">Tags by amount of votes</a>
-            <a href="{% url 'tags'  'projects'%}">Tags by amount of projects</a>
-        {% elif sorting == 'votes'%}
-            <a href="{% url 'tags_alphabetical'%}">Tags in alphabetical order</a>
-            <a href="{% url 'tags'  'projects'%}">Tags by amount of projects</a>
-        {% elif sorting == 'projects' %}
-            <a href="{% url 'tags'  'votes'%}">Tags by amount of votes</a>
-            <a href="{% url 'tags_alphabetical'%}">Tags in alphabetical order</a>
-        {% endif %}
-        <ul>
-            <li><a href="{% url 'projects_latest' %}">Projects</a></li>
-            <li><a href="{% url 'languages_alphabetical' %}">Languages</a></li>
-            <li><a href="{% url 'authors_alphabetical' %}">Authors</a></li>
-            <li><a href="{% url 'reasons_alphabetical' %}">Reasons</a></li>
-            <li><a href="{% url 'submit' %}">Add project</a></li>
-        </ul>
+        <div id="title">
+            <div id="title-top" style="text-align: center; font-size: 40pt">abandoned.me</div>
+            <div id="title-lower" style="text-align: center;">A list of abandoned open-source projects</div>
+        </div>
 
-        <ul>
-        {% for tag in tags_list %}
-            <li><a href="{% url 'tag' tag.id %}">{{ tag.text }}</a> total votes: {{ tag.votes_total }} total projects: {{ tag.projects_total }}
-            </li>
-        {% endfor %}
-        </ul>
+        <div id="top_menu">
+            <div class="inner_element">
+                <a href="{% url 'projects_latest' %}">Projects</a> /
+                <a href="{% url 'languages_alphabetical' %}">Languages</a> /
+                <a href="{% url 'authors_alphabetical' %}">Authors</a> /
+                <a href="{% url 'reasons_alphabetical' %}">Reasons</a>
+                <a href="{% url 'submit' %}">Add project</a>
+            </div>
+        </div>
+
+        <div class="page_element">
+            <div class="inner_element">
+                {% if sorting == 'alphabetical' %}
+                    <a href="{% url 'tags'  'votes'%}">Tags by amount of votes</a>
+                    <a href="{% url 'tags'  'projects'%}">Tags by amount of projects</a>
+                {% elif sorting == 'votes'%}
+                    <a href="{% url 'tags_alphabetical'%}">Tags in alphabetical order</a>
+                    <a href="{% url 'tags'  'projects'%}">Tags by amount of projects</a>
+                {% elif sorting == 'projects' %}
+                    <a href="{% url 'tags'  'votes'%}">Tags by amount of votes</a>
+                    <a href="{% url 'tags_alphabetical'%}">Tags in alphabetical order</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="page_element">
+            <ol style="margin-left: auto; margin-right: auto;" start="{{ s_item }}">
+            {% for tag in tags_list %}
+                <li><span style="font-weight:bold"><a href="{% url 'tag' tag.id %}">{{ tag.text }}</a></span>
+                    total votes: {{ tag.votes_total }} total projects: {{ tag.projects_total }}
+                </li>
+            {% endfor %}
+            </ol>
+        </div>
 
         <div class="pagination">
             <span class="step-links">
