@@ -12,13 +12,14 @@
             <div id="title-top" style="text-align: center; font-size: 40pt">abandoned.me</div>
             <div id="title-lower" style="text-align: center;">A list of abandoned open-source projects</div>
         </div>
-
-        <a href="{% url 'projects_latest' %}">Projects</a> /
-        <a href="{% url 'languages_alphabetical' %}">Languages</a> /
-        <a href="{% url 'tags_alphabetical' %}">Tags</a> /
-        <a href="{% url 'authors_alphabetical' %}">Authors</a> /
-        <a href="{% url 'reasons_alphabetical' %}">Reasons</a> /
-        <a href="{% url 'submit' %}">Add project</a>
+        <div class="inner_element">
+            <a href="{% url 'projects_latest' %}">Projects</a> /
+            <a href="{% url 'languages_alphabetical' %}">Languages</a> /
+            <a href="{% url 'tags_alphabetical' %}">Tags</a> /
+            <a href="{% url 'authors_alphabetical' %}">Authors</a> /
+            <a href="{% url 'reasons_alphabetical' %}">Reasons</a> /
+            <a href="{% url 'submit' %}">Add project</a>
+        </div>
     </div>
 
 
