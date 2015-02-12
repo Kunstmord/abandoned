@@ -1,8 +1,12 @@
 #content {
     align-content: center;
     justify-content: center;
-    display: flex; height: 100vh; width: 100vw;
+    display: flex;
+    display: -webkit-flex;
+    height: 100vh;
+    width: 100vw;
     flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
 }
 
 #title {
@@ -14,11 +18,19 @@
     height: 36px;
     width: 100vw;
     display: flex;
+    display: -webkit-flex;
 }
 
 .page_element {
     width: 100vw;
     display: flex;
+    display: -webkit-flex;
+}
+
+.pagination {
+    width: 100vw;
+    display: flex;
+    display: -webkit-flex;
 }
 
 .inner_element {
@@ -33,4 +45,9 @@ body {
 .inner_element a {
     padding-left: 1px;
     padding-right: 1px;
+}
+
+span.step-links {
+    margin-left: auto;
+    margin-right: auto;
 }
