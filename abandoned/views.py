@@ -206,7 +206,7 @@ def single_author_view(request, author_id):
         raise Http404
     pg = simple_pagination_generic(page, author.projects.all())
     return render(request, 'single_author.html', {'author': author, 'projects_list': pg[0],
-                                                  's_item':(pg[1] - 1) * 10 + 1})
+                                                  's_item': (pg[1] - 1) * 10 + 1})
 
 
 def single_language_view(request, language_id):
