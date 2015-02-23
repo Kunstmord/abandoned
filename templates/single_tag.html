@@ -32,7 +32,7 @@
                 {% for project in projects_list %}
                     <li>
                         <span style="font-weight:bold"><a href="{% url 'project' project.id %}">{{ project.name }}</a></span>
-                            by <a target="_blank" href="{{ project.author.link }}">{{ project.author.author_name }}</a> written in
+                            by <a href="{% url 'author' project.author.id %}">{{ project.author.author_name }}</a> written in
                             <a href="{% url 'language' project.language.id %}">{{ project.language.language_name }}</a>,
                         {{ project.upvotes }} upvotes, created on {{ project.date_added|date:"d M Y" }}
                     </li>
