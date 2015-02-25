@@ -30,9 +30,28 @@ $(document).ready(function() {
         }
     });
 
+    function createCookie(name, value, days) {
+        var expires;
+
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toGMTString();
+        } else {
+            expires = "";
+        }
+        document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
+    }
+
     var upvote_button = $("#upvote_button");
     var prj_upvotes = $("#prj_upvotes");
     var voted = 0;
+    var prj_id = $("#prj_id_div").text();
+
+    if (getCookie(prj_id) == 1) {
+        voted = 1;
+        upvote_button.html('Thank you for voting');
+    }
 
     upvote_button.click(function() {
         if (voted == 0) {
@@ -44,9 +63,9 @@ $(document).ready(function() {
                     prj_upvotes.html(data['upvotes']);
                     upvote_button.html('Thank you for voting');
                     voted = 1;
+                    createCookie(prj_id, 1, 201);
                 }
             });
         }
-
     });
 });
