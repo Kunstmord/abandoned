@@ -296,5 +296,9 @@ def api_info_view(request):
     return render(request, 'api_info.html')
 
 
+def cookie_info_view(request):
+    return render(request, 'cookiepolicy.html')
+
+
 def main_page(request):
     return render(request, 'index.html')

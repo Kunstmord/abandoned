@@ -5,11 +5,11 @@ from rest_framework import routers
 
 
 router = routers.DefaultRouter()
-router.register(r'api/tags', abandoned.views.TagViewSet)
-router.register(r'api/authors', abandoned.views.AuthorViewSet)
-router.register(r'api/reasons', abandoned.views.ReasonViewSet)
-router.register(r'api/projects', abandoned.views.ProjectViewSet)
-router.register(r'api/languages', abandoned.views.LanguageViewSet)
+router.register(r'tags', abandoned.views.TagViewSet)
+router.register(r'authors', abandoned.views.AuthorViewSet)
+router.register(r'reasons', abandoned.views.ReasonViewSet)
+router.register(r'projects', abandoned.views.ProjectViewSet)
+router.register(r'languages', abandoned.views.LanguageViewSet)
 
 urlpatterns = patterns('',
                        url(r'^$', abandoned.views.main_page, name='main_page'),
@@ -30,6 +30,8 @@ urlpatterns = patterns('',
                        url(r'^reason/(?P<reason_id>\d+)/$', abandoned.views.single_reason_view, name='reason'),
                        url(r'^upvote/$', abandoned.views.handle_upvote, name='upvote'),
                        url(r'^submit/$', abandoned.views.handle_submit, name='submit'),
-                       url(r'^', include(router.urls)),
+                       url(r'^api_info/$', abandoned.views.api_info_view, name='api_info'),
+                       url(r'^cookies/$', abandoned.views.cookie_info_view, name='cookies'),
+                       url(r'^api/', include(router.urls)),
                        url(r'^admin/', include(admin.site.urls)),
                        )
