@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link href="{{ STATIC_URL }}design.css" type="text/css" rel="stylesheet" />
+    <title>dontabandon.me – API info</title>
+</head>
+<body>
+    <div id="content">
+        <div id="title">
+            <div id="title-top" style="text-align: center; font-size: 40pt">dontabandon.me</div>
+            <div id="title-lower" style="text-align: center;">A list of abandoned open-source projects</div>
+        </div>
+        <div id="top_menu">
+            <div class="inner_element">
+                <a href="{% url 'projects_latest' %}">Projects</a> /
+                <a href="{% url 'languages_alphabetical' %}">Languages</a> /
+                <a href="{% url 'tags_alphabetical' %}">Tags</a> /
+                <a href="{% url 'reasons_alphabetical' %}">Reasons</a> /
+                <a href="{% url 'submit' %}">Add project</a>
+            </div>
+        </div>
+
+        <div class="page_element">
+            <div style="margin-left: auto; margin-right: auto;">
+                dontabandon.me provides a simple read-only API (thanks to Django Rest Framework). The browseable api can be found
+                <a href="{% url 'api-root' %}">here</a>.
+
+                Here is a list of all possible requests to the API:
+                <ul>
+
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'author-list' %}">api/authors</a></span> – authors in alphabetical order
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'author-votes' %}">api/authors/votes</a></span> – authors ordered by number of votes
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'author-projects' %}">api/authors/projects</a></span> – authors ordered by number of projects
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'author-detail' 1 %}">api/authors/1</a></span> – single author page (replace 1 with
+                        author id)
+                    </li>
+
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'language-list' %}">api/languages</a></span> – languages in alphabetical order
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'language-votes' %}">api/languages/votes</a></span> – languages ordered by number of votes
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'language-projects' %}">api/languages/projects</a></span> – languages ordered by number of projects
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'language-detail' 1 %}">api/languages/1</a></span> – single language page (replace 1 with
+                        language id)
+                    </li>
+
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'project-list' %}">api/projects</a></span> – projects in alphabetical order
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'project-latest' %}">api/projects/latest</a></span> – projects ordered by add date
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'project-votes' %}">api/projects/votes</a></span> – projects ordered by number of votes
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'project-detail' 1 %}">api/projects/1</a></span> – single project page (replace 1 with
+                        project id)
+                    </li>
+
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'reason-list' %}">api/reasons</a></span> – reasons in alphabetical order
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'reason-votes' %}">api/reasons/votes</a></span> – reasons ordered by number of votes
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'reason-projects' %}">api/reasons/projects</a></span> – reasons ordered by number of projects
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'reason-detail' 1 %}">api/reasons/1</a></span> – single reason page (replace 1 with
+                        reason id)
+                    </li>
+                    
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'tag-list' %}">api/tags</a></span> – tags in alphabetical order
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'tag-votes' %}">api/tags/votes</a></span> – tags ordered by number of votes
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'tag-projects' %}">api/tags/projects</a></span> – tags ordered by number of projects
+                    </li>
+                    <li>
+                        <span style="font-weight:bold"><a href="{% url 'tag-detail' 1 %}">api/tags/1</a></span> – single tag page (replace 1 with
+                        tag id)
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
