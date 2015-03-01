@@ -61,7 +61,7 @@ def simple_pagination_generic(page, instance_list):
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Author.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
+    queryset = Author.objects.extra(select={'lowercase_name': 'lower(author_name)'}).order_by('lowercase_name')
     serializer_class = AuthorSerializer
 
     @list_route()
@@ -100,7 +100,7 @@ class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Language.objects.extra(select={'lowercase_name': 'lower(name)'}).order_by('lowercase_name')
+    queryset = Language.objects.extra(select={'lowercase_name': 'lower(language_name)'}).order_by('lowercase_name')
     serializer_class = LanguageSerializer
 
     @list_route()
@@ -290,6 +290,10 @@ def reasons_view(request, sorting='alphabetical'):
     pg = pagination_generic(page, sorting, Reason, 'lower(reason)', 'lowercase_text')
     return render(request, 'reasons.html', {'reasons_list': pg[0], 's_item': (pg[1] - 1) * 10 + 1,
                                             'sorting': sorting})
+
+
+def api_info_view(request):
+    return render(request, 'api_info.html')
 
 
 def main_page(request):

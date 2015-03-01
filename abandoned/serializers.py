@@ -13,7 +13,7 @@ class BaseProjectSerializer(serializers.ModelSerializer):
 class BaseAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        fields = ('id', 'author_name', 'link',)
+        fields = ('id', 'author_name', 'author_link',)
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Author
-        fields = ('id', 'author_name', 'link', 'projects')
+        fields = ('id', 'author_name', 'author_link', 'projects')
 
 
 class BaseReasonSerializer(serializers.ModelSerializer):
