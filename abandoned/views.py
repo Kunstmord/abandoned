@@ -11,19 +11,20 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import viewsets
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 
-def votes_generic(model_obj, class_instance):
+def votes_generic(model_obj, model_serializer, class_instance):
     votes = model_obj.objects.annotate(votes_total=Sum('projects__upvotes')).order_by('votes_total').reverse()
     page = class_instance.paginate_queryset(votes)
-    serializer = class_instance.get_pagination_serializer(page)
+    serializer = model_serializer(page, many=True)
     return Response(serializer.data)
 
 
-def projects_generic(model_obj, class_instance):
+def projects_generic(model_obj, model_serializer, class_instance):
     votes = model_obj.objects.annotate(Count('projects')).order_by('projects__count').reverse()
     page = class_instance.paginate_queryset(votes)
-    serializer = class_instance.get_pagination_serializer(page)
+    serializer = model_serializer(page, many=True)
     return Response(serializer.data)
 
 
@@ -63,14 +64,15 @@ def simple_pagination_generic(page, instance_list):
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Author.objects.extra(select={'lowercase_name': 'lower(author_name)'}).order_by('lowercase_name')
     serializer_class = AuthorSerializer
+    pagination_class = PageNumberPagination
 
     @list_route()
     def votes(self, request):
-        return votes_generic(Author, self)
+        return votes_generic(Author, AuthorSerializer, self)
 
     @list_route()
     def projects(self, request):
-        return projects_generic(Author, self)
+        return projects_generic(Author, AuthorSerializer, self)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -79,11 +81,11 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
     @list_route()
     def votes(self, request):
-        return votes_generic(Tag, self)
+        return votes_generic(Tag, TagSerializer, self)
 
     @list_route()
     def projects(self, request):
-        return projects_generic(Tag, self)
+        return projects_generic(Tag, TagSerializer, self)
 
 
 class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
@@ -92,11 +94,11 @@ class ReasonViewSet(viewsets.ReadOnlyModelViewSet):
 
     @list_route()
     def votes(self, request):
-        return votes_generic(Reason, self)
+        return votes_generic(Reason, ReasonSerializer, self)
 
     @list_route()
     def projects(self, request):
-        return projects_generic(Reason, self)
+        return projects_generic(Reason, ReasonSerializer, self)
 
 
 class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -105,11 +107,11 @@ class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
 
     @list_route()
     def votes(self, request):
-        return votes_generic(Language, self)
+        return votes_generic(Language, LanguageSerializer, self)
 
     @list_route()
     def projects(self, request):
-        return projects_generic(Language, self)
+        return projects_generic(Language, LanguageSerializer, self)
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
@@ -120,14 +122,14 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     def votes(self, request):
         top = Project.objects.all().order_by('upvotes').reverse()
         page = self.paginate_queryset(top)
-        serializer = self.get_pagination_serializer(page)
+        serializer = ProjectSerializer(page, many=True)
         return Response(serializer.data)
 
     @list_route()
     def latest(self, request):
         latest = Project.objects.all().order_by('date_added').reverse()
         page = self.paginate_queryset(latest)
-        serializer = self.get_pagination_serializer(page)
+        serializer = ProjectSerializer(page, many=True)
         return Response(serializer.data)
 
 
